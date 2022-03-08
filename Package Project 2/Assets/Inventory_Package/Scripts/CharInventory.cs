@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class CharInventory : MonoBehaviour
 {
     //Player gets near object, list of nearby objects is detected and returned
@@ -13,9 +14,10 @@ public class CharInventory : MonoBehaviour
 
     public GameObject playerCamera;
     public GameObject invScreen;
+    public GameObject pSlot;
+    public GameObject pItem;
 
-    [SerializeField]
-    private int capacity;
+    public int capacity;
     private List<GameObject> Inventory = new List<GameObject>();
     
     [SerializeField]
@@ -35,10 +37,13 @@ public class CharInventory : MonoBehaviour
     private Item selected;
     private bool invOpen;
     private Text debugList;
+    [HideInInspector]
+    public List<GameObject> slots;
+
 
     void Start()
     {
-        debugList = invScreen.transform.Find("DebugList").GetComponent<Text>();
+        debugList = invScreen.transform.Find("TextPanel/DebugList").GetComponent<Text>();
         invOpen = invScreen.activeSelf;
         Inventory.Capacity = capacity;
     }
