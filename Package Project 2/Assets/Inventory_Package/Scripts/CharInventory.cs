@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharInventory : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class CharInventory : MonoBehaviour
     //If stack size is 0, stack forever
 
     public GameObject playerCamera;
+    public GameObject invScreen;
 
     [SerializeField]
     private int capacity;
@@ -18,6 +20,8 @@ public class CharInventory : MonoBehaviour
     
     [SerializeField]
     private KeyCode pickUpInput;
+    [SerializeField]
+    private KeyCode openInput;
     [SerializeField, Tooltip("Pickup radius, in a sphere around the centre of the character")]
     private float pickUpRange = 4;
     [SerializeField, Tooltip("Do you have to be looking at object to pick it up? If not, distance to centre of screen is priority")]
@@ -29,18 +33,24 @@ public class CharInventory : MonoBehaviour
 
     private RaycastHit hit;
     private Item selected;
+    private bool invOpen;
+    private Text debugList;
+
     void Start()
     {
+        debugList = invScreen.transform.Find("DebugList").GetComponent<Text>();
+        invOpen = invScreen.activeSelf;
         Inventory.Capacity = capacity;
     }
 
     void Update()
     {
+        openInv(Input.GetKeyDown(openInput));
+
         if (requireLookAt)
         {
             if (Physics.SphereCast(playerCamera.transform.position, raySize, playerCamera.transform.forward, out hit, pickUpRange - raySize, ~ignore))
             {
-                //Debug.Log("Spherecast successful");
                 if (requireLookAt && hit.collider.gameObject.GetComponent<Item>())
                 {
                     selected = hit.collider.gameObject.GetComponent<Item>();
@@ -66,6 +76,15 @@ public class CharInventory : MonoBehaviour
         return inRange;
     }
 
+    void openInv(bool open)
+    {
+        if (open)
+        {
+            invScreen.SetActive(!invOpen);
+            invOpen = !invOpen;
+        }
+    }
+
     void pickUpItem(GameObject obj)
     {
         // If there is space in the inventory, add the object and disable it in the world.
@@ -73,10 +92,21 @@ public class CharInventory : MonoBehaviour
         {
             Inventory.Add(obj);
             obj.SetActive(false);
+            //debugList.text += obj.GetComponent<Item>().itemName;
+            updateInv();
         }
         else
         {
             Debug.Log("Inventory full!");
+        }
+    }
+
+    void updateInv()
+    {
+        debugList.text = "";
+        for (int i = 0; i < Inventory.Capacity; i++)
+        {
+            debugList.text += $"{Inventory[i].GetComponent<Item>().itemName}, ";
         }
     }
 }
