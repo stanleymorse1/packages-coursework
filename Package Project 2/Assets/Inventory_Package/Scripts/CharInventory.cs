@@ -33,19 +33,18 @@ public class CharInventory : MonoBehaviour
     [SerializeField]
     private LayerMask ignore;
 
+    private List<GameObject> slots;
     private RaycastHit hit;
     private Item selected;
     private bool invOpen;
     private Text debugList;
-    [HideInInspector]
-    public List<GameObject> slots;
-
 
     void Start()
     {
         debugList = invScreen.transform.Find("TextPanel/DebugList").GetComponent<Text>();
         invOpen = invScreen.activeSelf;
         Inventory.Capacity = capacity;
+        slots = invScreen.transform.Find("Inventory").GetComponent<GenerateSlots>().slots; // Can't reference from editor folder?
     }
 
     void Update()
@@ -63,7 +62,7 @@ public class CharInventory : MonoBehaviour
                     if (Input.GetKeyDown(pickUpInput))
                     {
                         Debug.Log($"Picked up {selected.itemName}");
-                        pickUpItem(selected.gameObject);
+                        pickUpItem(selected);
                     }
                 }
             }
@@ -90,14 +89,15 @@ public class CharInventory : MonoBehaviour
         }
     }
 
-    void pickUpItem(GameObject obj)
+    void pickUpItem(Item item)
     {
         // If there is space in the inventory, add the object and disable it in the world.
         if (Inventory.Count < Inventory.Capacity)
         {
-            Inventory.Add(obj);
-            obj.SetActive(false);
-            //debugList.text += obj.GetComponent<Item>().itemName;
+            Inventory.Add(item.gameObject);
+            item.gameObject.SetActive(false);
+            GameObject i_item = Instantiate(pItem, slots[Inventory.Count - 1].transform);
+            i_item.transform.Find("Name").GetComponent<Text>().text = item.itemName;
             updateInv();
         }
         else
