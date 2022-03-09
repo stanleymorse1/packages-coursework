@@ -41,10 +41,10 @@ public class CharInventory : MonoBehaviour
 
     void Start()
     {
-        debugList = invScreen.transform.Find("TextPanel/DebugList").GetComponent<Text>();
-        invOpen = invScreen.activeSelf;
+        debugList = invScreen.transform.Find("Inventory/TextPanel/DebugList").GetComponent<Text>();
+        invOpen = invScreen.transform.Find("Inventory").gameObject.activeSelf;
         Inventory.Capacity = capacity;
-        slots = invScreen.transform.Find("Inventory").GetComponent<GenerateSlots>().slots;
+        slots = invScreen.GetComponent<GenerateSlots>().slots;
     }
 
     void Update()
@@ -71,6 +71,14 @@ public class CharInventory : MonoBehaviour
         {
             checkRadius().GetValue(0);
         }
+        if (invOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     Collider[] checkRadius()
@@ -84,7 +92,8 @@ public class CharInventory : MonoBehaviour
     {
         if (open)
         {
-            invScreen.GetComponent<Canvas>().enabled = !invOpen;
+            Debug.Log("Pressed E");
+            invScreen.transform.Find("Inventory").gameObject.SetActive(!invOpen);
             invOpen = !invOpen;
         }
     }

@@ -7,14 +7,13 @@ public class GenerateSlots : MonoBehaviour
 {
     //[HideInInspector]
     public List<GameObject> slots;
+    public GameObject slotsParent;
     private CharInventory ci;
     [SerializeField]
     private GameObject player;
 
-    private int childNum;
 
-
-    private void Awake()
+    private void Start()
     {
         ci = player.GetComponent<CharInventory>();
         slots = new List<GameObject>(0);
@@ -22,15 +21,12 @@ public class GenerateSlots : MonoBehaviour
 
     void OnRenderObject()
     {
+        Debug.Log("Running");
         //Something is destroying slots that should be in the list
-        if (transform.childCount > ci.capacity)
+        if (slotsParent.transform.childCount > ci.capacity)
         {
             Debug.Log("Removing excess slots!");
-            //for (int i = transform.childCount - 1; i >=0; i--)
-            //{
-            //    DestroyImmediate(transform.GetChild(i).gameObject);
-            //}
-            foreach (Transform child in transform)
+            foreach (Transform child in slotsParent.transform)
             {
                 DestroyImmediate(child.gameObject);
                 slots.RemoveAt(slots.IndexOf(child.gameObject));
@@ -54,7 +50,7 @@ public class GenerateSlots : MonoBehaviour
         {
             for (int i = 0; i < ci.capacity; i++)
             {
-                GameObject i_slot = Instantiate(ci.pSlot, transform);
+                GameObject i_slot = Instantiate(ci.pSlot, slotsParent.transform);
                 slots.Add(i_slot);
             }
         }
