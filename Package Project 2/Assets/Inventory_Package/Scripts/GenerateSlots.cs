@@ -11,34 +11,37 @@ public class GenerateSlots : MonoBehaviour
     [SerializeField]
     private GameObject player;
 
-    private void Start()
+    private int childNum;
+
+
+    private void Awake()
     {
         ci = player.GetComponent<CharInventory>();
-        if (transform.childCount <= ci.capacity)
-        {
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                DestroyImmediate(transform.GetChild(i));
-            }
-            slots = new List<GameObject>(0);
-        }
+        slots = new List<GameObject>(0);
     }
+
     void OnRenderObject()
     {
-        //Switch this to a for loop you fucking idiot
+        //Something is destroying slots that should be in the list
+        if (transform.childCount > ci.capacity)
+        {
+            Debug.Log("Removing excess slots!");
+            //for (int i = transform.childCount - 1; i >=0; i--)
+            //{
+            //    DestroyImmediate(transform.GetChild(i).gameObject);
+            //}
+            foreach (Transform child in transform)
+            {
+                DestroyImmediate(child.gameObject);
+                slots.RemoveAt(slots.IndexOf(child.gameObject));
+            }
+
+        }
+        //if (transform.childCount == 0)
+        //{
+        //    slots = new List<GameObject>(0);
+        //}
         Debug.Log($"{slots.Count} slots out of {ci.capacity}");
-        /*
-        if (slots.Count > ci.capacity)
-        {
-            DestroyImmediate(slots[slots.Count - 1]);
-            slots.RemoveAt(slots.Count - 1);
-        }
-        if (slots.Count < ci.capacity)
-        {
-            GameObject i_slot = Instantiate(ci.pSlot, transform);
-            slots.Add(i_slot);
-        }
-        */
         if (slots.Count > ci.capacity)
         {
             for (int i = ci.capacity; i >= 0; i--)

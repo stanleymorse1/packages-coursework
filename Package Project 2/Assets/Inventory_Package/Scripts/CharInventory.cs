@@ -44,7 +44,7 @@ public class CharInventory : MonoBehaviour
         debugList = invScreen.transform.Find("TextPanel/DebugList").GetComponent<Text>();
         invOpen = invScreen.activeSelf;
         Inventory.Capacity = capacity;
-        slots = invScreen.transform.Find("Inventory").GetComponent<GenerateSlots>().slots; // Can't reference from editor folder?
+        slots = invScreen.transform.Find("Inventory").GetComponent<GenerateSlots>().slots;
     }
 
     void Update()
@@ -84,7 +84,7 @@ public class CharInventory : MonoBehaviour
     {
         if (open)
         {
-            invScreen.SetActive(!invOpen);
+            invScreen.GetComponent<Canvas>().enabled = !invOpen;
             invOpen = !invOpen;
         }
     }
@@ -96,7 +96,7 @@ public class CharInventory : MonoBehaviour
         {
             Inventory.Add(item.gameObject);
             item.gameObject.SetActive(false);
-            GameObject i_item = Instantiate(pItem, slots[Inventory.Count - 1].transform);
+            GameObject i_item = Instantiate(pItem, slots[Inventory.Count-1].transform);
             i_item.transform.Find("Name").GetComponent<Text>().text = item.itemName;
             updateInv();
         }
