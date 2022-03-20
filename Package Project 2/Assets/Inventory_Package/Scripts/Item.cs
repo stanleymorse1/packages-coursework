@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class Item : MonoBehaviour
 {
     public string itemName;
@@ -10,6 +11,6 @@ public class Item : MonoBehaviour
     public bool stackable;
     public int stackSize;
     public bool usable;
-    public string usePrompt;
+    public string verb;
     public UnityEvent use;
 }

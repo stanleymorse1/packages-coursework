@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1506983379006468684}
   - component: {fileID: 1506983379006468686}
-  - component: {fileID: 1506983379006468685}
+  - component: {fileID: 6752218058434367603}
   m_Layer: 5
   m_Name: Slot
   m_TagString: Untagged
@@ -45,7 +45,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1506983379006468691}
   m_CullTransparentMesh: 1
---- !u!114 &1506983379006468685
+--- !u!114 &6752218058434367603
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 0.50980395}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
