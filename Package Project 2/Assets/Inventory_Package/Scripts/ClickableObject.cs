@@ -12,16 +12,32 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler
     private float timeElapsed;
     private float startVal;
 
-    public void OnPointerClick(PointerEventData eventData)
+    private Item itemScript;
+    private CharInventory inventory;
+
+    private void Start()
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            Debug.Log("Left click");
-        else if (eventData.button == PointerEventData.InputButton.Middle)
-            Debug.Log("Middle click");
-        else if (eventData.button == PointerEventData.InputButton.Right)
-            Debug.Log("Right click");
+        itemScript = item.GetComponent<Item>();
+        inventory = GameObject.FindWithTag("Player").GetComponent<CharInventory>();
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left && itemScript.usable)
+        {
+            Debug.Log($"Used {itemScript.itemName}");
+            itemScript.use.Invoke();
+        }
+        //else if (eventData.button == PointerEventData.InputButton.Middle)
+        //    Debug.Log("Middle click");
+        else if (eventData.button == PointerEventData.InputButton.Right && itemScript.droppable)
+        {
+            Debug.Log($"Dropped {itemScript.itemName}");
+            inventory.SendMessage("dropItem", item);
+        }
+    }
+
+    // Detect when player is hovering over this item in the inventory
     public void onPointerEnter()
     {
         startVal = prompt.GetComponent<CanvasGroup>().alpha;
@@ -34,11 +50,10 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler
         displayPrompt = false;
         timeElapsed = 0;
     }
-
     private void Update()
     {
         float currentVal = prompt.GetComponent<CanvasRenderer>().GetAlpha();
-        if (displayPrompt)
+        if (displayPrompt && (itemScript.usable || itemScript.droppable))
         {
             prompt.GetComponent<CanvasGroup>().alpha = (Mathf.Lerp(startVal, 1, timeElapsed/lerpDuration));
         }

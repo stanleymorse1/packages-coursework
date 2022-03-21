@@ -21,8 +21,6 @@ public class GenerateSlots : MonoBehaviour
 
     void OnRenderObject()
     {
-        Debug.Log("Running");
-        //Something is destroying slots that should be in the list
         if (slotsParent.transform.childCount > ci.capacity)
         {
             Debug.Log("Removing excess slots!");
@@ -33,10 +31,7 @@ public class GenerateSlots : MonoBehaviour
             }
 
         }
-        //if (transform.childCount == 0)
-        //{
-        //    slots = new List<GameObject>(0);
-        //}
+
         Debug.Log($"{slots.Count} slots out of {ci.capacity}");
         if (slots.Count > ci.capacity)
         {

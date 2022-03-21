@@ -11,6 +11,7 @@ public class Item : MonoBehaviour
     public bool stackable;
     public int stackSize;
     public bool usable;
+    public bool droppable;
     public string verb;
     public UnityEvent use;
 }

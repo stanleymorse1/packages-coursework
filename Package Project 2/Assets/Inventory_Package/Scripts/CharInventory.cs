@@ -13,10 +13,14 @@ public class CharInventory : MonoBehaviour
     //Divide number of that item by stacksize, create number of stacks related to result rounded up
     //If stack size is 0, stack forever
 
+    //Push all items in slots higher than the item dropped down by one.
+    //OR 
+
     public GameObject playerCamera;
     public GameObject invScreen;
     public GameObject pSlot;
     public GameObject pItem;
+    public float dropOffset = 0.5f;
 
     public int capacity;
     private List<GameObject> Inventory = new List<GameObject>();
@@ -96,6 +100,7 @@ public class CharInventory : MonoBehaviour
             Debug.Log("Pressed E");
             invScreen.transform.Find("Inventory").gameObject.SetActive(!invOpen);
             invOpen = !invOpen;
+            transform.GetComponent<ExamplePlayer>().enabled = !invOpen;
         }
     }
 
@@ -107,25 +112,38 @@ public class CharInventory : MonoBehaviour
             Inventory.Add(item.gameObject);
             item.gameObject.SetActive(false);
             GameObject i_item = Instantiate(pItem, slots[Inventory.Count-1].transform);
-            //If there is no image, display text always. IF there is, display text on hover.
-            if(item.image == null)
-            {
-                i_item.transform.Find("Name").GetComponent<Text>().text = item.itemName;
-            }
+
+            //If there is no image, display text always. If there is, display text on hover. // REMEMBER TO IMPLEMENT THIS THICKO
+            i_item.transform.Find("Name").GetComponent<Text>().text = item.itemName;
             if(item.image != null)
             {
                 i_item.GetComponent<Image>().sprite = item.image;
             }
-            if (string.Concat(item.verb) == "")
+
+            //In future, replace "LMB" and "RMB" with images, and if possible, images relating to custom inputs too
+            string prompt = "";
+            if(item.usable)
             {
-                i_item.transform.Find("HoverPrompt/Prompt").GetComponent<Text>().text = $"LMB: Use | RMB: Drop";    
+                if (string.Concat(item.verb) == "")
+                {
+                    prompt += $"LMB: Use";
+                }
+                else
+                {
+                    prompt += $"LMB: {item.verb}";
+                }
             }
-            if (string.Concat(item.verb) != "")
+            if(item.usable && item.droppable)
             {
-                i_item.transform.Find("HoverPrompt/Prompt").GetComponent<Text>().text = $"LMB: {item.verb} | RMB: Drop";
+                prompt += " | ";
             }
+            if (item.droppable)
+            {
+                prompt += "RMB: Drop";
+            }
+            i_item.transform.Find("HoverPrompt/Prompt").GetComponent<Text>().text = prompt;
             i_item.GetComponent<ClickableObject>().item = item.gameObject;
-            updateInv();
+            //updateInv();
         }
         else
         {
@@ -135,10 +153,34 @@ public class CharInventory : MonoBehaviour
 
     void updateInv()
     {
-        debugList.text = "";
+        //debugList.text = Inventory.ToString();
         for (int i = 0; i < Inventory.Capacity; i++)
         {
-            debugList.text += $"{Inventory[i].GetComponent<Item>().itemName}, ";
+            if (slots[i].transform.childCount == 0)
+            {
+                if (slots[i + 1].transform.childCount != 0)
+                {
+                    Debug.Log("No item in slot! Moving next item up...");
+                    slots[i + 1].GetComponentInChildren<ClickableObject>().transform.SetParent(slots[i].transform, false);
+                }
+            }
         }
+
+
+        //DEBUG: Dropping the first item does not cause successors to move down
+        //All items dropped after first drop the item before them in the list.
+
+        //For each item in the array, check if slot before it is empty, move item to that slot, repeat.
+        //This way the inventory items always move to the top left
+    }
+
+    void dropItem(GameObject item)
+    {
+        item.SetActive(true);
+        item.transform.position = transform.position + transform.forward * dropOffset;
+        Destroy(slots[Inventory.IndexOf(item)].GetComponentInChildren<ClickableObject>().gameObject);
+        Inventory.Remove(item);
+        Invoke("updateInv", Time.deltaTime);
+        //When item is dropped, remember to shift all items back one in the inventory!
     }
 }
