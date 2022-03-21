@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prompt: {fileID: 6708168223475275721}
+  item: {fileID: 0}
   lerpDuration: 0.19
 --- !u!114 &6784544231813045701
 MonoBehaviour:
@@ -353,6 +354,7 @@ GameObject:
   - component: {fileID: 2966172047880749098}
   - component: {fileID: 9159668372997441021}
   - component: {fileID: 1586940317473182325}
+  - component: {fileID: 6642061457484706586}
   m_Layer: 5
   m_Name: Name
   m_TagString: Untagged
@@ -374,10 +376,10 @@ RectTransform:
   m_Father: {fileID: 5102937155537094011}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000049591064, y: 0.000011444092}
-  m_SizeDelta: {x: 59.5887, y: 59.5887}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 119.5887, y: 59.5887}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9159668372997441021
 CanvasRenderer:
@@ -421,6 +423,18 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Name
+--- !u!225 &6642061457484706586
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3817491250391476485}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6708168223475275721
 GameObject:
   m_ObjectHideFlags: 0

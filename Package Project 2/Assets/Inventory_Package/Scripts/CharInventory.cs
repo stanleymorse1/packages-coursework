@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 
 public class CharInventory : MonoBehaviour
@@ -106,12 +107,29 @@ public class CharInventory : MonoBehaviour
             Inventory.Add(item.gameObject);
             item.gameObject.SetActive(false);
             GameObject i_item = Instantiate(pItem, slots[Inventory.Count-1].transform);
-            i_item.transform.Find("Name").GetComponent<Text>().text = item.itemName;
+            //If there is no image, display text always. IF there is, display text on hover.
+            if(item.image == null)
+            {
+                i_item.transform.Find("Name").GetComponent<Text>().text = item.itemName;
+            }
+            if(item.image != null)
+            {
+                i_item.GetComponent<Image>().sprite = item.image;
+            }
+            if (string.Concat(item.verb) == "")
+            {
+                i_item.transform.Find("HoverPrompt/Prompt").GetComponent<Text>().text = $"LMB: Use | RMB: Drop";    
+            }
+            if (string.Concat(item.verb) != "")
+            {
+                i_item.transform.Find("HoverPrompt/Prompt").GetComponent<Text>().text = $"LMB: {item.verb} | RMB: Drop";
+            }
+            i_item.GetComponent<ClickableObject>().item = item.gameObject;
             updateInv();
         }
         else
         {
-            Debug.Log("Inventory full!");
+            Debug.Log("No free slots in suit inventory");
         }
     }
 

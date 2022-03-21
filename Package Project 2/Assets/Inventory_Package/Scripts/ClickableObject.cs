@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class ClickableObject : MonoBehaviour, IPointerClickHandler
 {
     public GameObject prompt;
+    public GameObject item;
     private bool displayPrompt = false;
     public float lerpDuration = 0.3f;
 
@@ -44,6 +45,10 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler
         else
         {
             prompt.GetComponent<CanvasGroup>().alpha = (Mathf.Lerp(startVal, 0, timeElapsed / lerpDuration));
+        }
+        if(item.GetComponent<Item>().image != null)
+        {
+            prompt.transform.parent.Find("Name").GetComponent<CanvasGroup>().alpha = currentVal;
         }
         timeElapsed += Time.deltaTime;
     }
