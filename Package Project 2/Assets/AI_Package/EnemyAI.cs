@@ -6,8 +6,12 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
-    //Strafe behaviour
+    //Patrol behaviour
+    //When losing player, check left, check right, then patrol in a 4 by 4 area 4m in front of where you were when you lost them
+    //If not found within a short time range, resume a large patrol
     //Damage script
+    //Different speeds for aggro and not aggro
+    //Swap targets if: New target breaks previous LOS, new target deals enough damage
     //Identify if damage came from current target, if not, switch targets after a certain amount
     //Retreat/cover behaviour as bonus if you have time?
 
@@ -20,13 +24,25 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float facePlayerSpd = 0.1f;
     [SerializeField]
+    private float strafeFrequency;
+    [SerializeField]
+    private float patrolRange;
+    [SerializeField]
+    private float patrolFrequency;
+    public bool returnToPost;
+    [SerializeField]
     private GameObject head;
     [SerializeField]
     private LayerMask ignore;
+
     private List<GameObject> targets;
-    private NavMeshAgent agent;
     private Transform focus;
+
+    private NavMeshAgent agent;
     private float stopDist;
+    private bool strafing;
+    private bool patrolling;
+    private float strafeSpd;
 
     private float h;
     private float o;
@@ -40,23 +56,35 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
-        checkVision();
-        // If the player is within stopping distance or the agent is tacticool, turn to face them
-        if ((Vector3.Distance(focus.position, transform.position) <= agent.stoppingDistance && checkVision()) || facePlayer && checkVision())
-        {
-            var targetRot = Quaternion.LookRotation(Vector3.Scale(focus.position - transform.position, new Vector3(1, 0, 1)), Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, facePlayerSpd * Time.deltaTime);
-        }
-        // If the agent cannot see the player, go all the way to their last seen position
+
+        //If agent has signt
         if (checkVision())
         {
-            agent.stoppingDistance = stopDist;
+            // If the player is within stopping distance or the agent is tacticool, turn to face them
+            if ((Vector3.Distance(focus.position, transform.position) <= agent.stoppingDistance && checkVision()) || facePlayer && checkVision())
+            {
+                var targetRot = Quaternion.LookRotation(Vector3.Scale(focus.position - transform.position, new Vector3(1, 0, 1)), Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, facePlayerSpd * Time.deltaTime);
+            }
+            // Strafe if strafing (simple)
+            if (strafing)
+            {
+                agent.Move(strafeSpd * transform.right * Time.deltaTime);
+            }
+            // If the agent cannot see the player, go all the way to their last seen position, otherwise distance to protect the NHS
+            if (checkVision())
+            {
+                agent.stoppingDistance = stopDist;
+            }
+            else
+            {
+                agent.stoppingDistance = 0;
+            }
         }
         else
         {
             agent.stoppingDistance = 0;
         }
-        Debug.Log(agent.destination);
     }
 
     void getPlayers()
@@ -97,6 +125,8 @@ public class EnemyAI : MonoBehaviour
             }
 
         }
+        if (!patrolling && agent.remainingDistance <= 0.1f)
+            StartCoroutine(patrol());
         return false;
     }
 
@@ -104,16 +134,33 @@ public class EnemyAI : MonoBehaviour
     {
         agent.SetDestination(dest.position);
         focus = dest;
+        if (strafing == false)
+        { 
+            strafing = true;StartCoroutine(strafeWalk()); // Two for one package deal, disgusting
+        }
+    }
+    // Overload, fancy shit
+    void pathToPoint(Vector3 dest)
+    {
+        agent.SetDestination(dest);
     }
 
     IEnumerator strafeWalk()
     {
-        //Wait a random amount of seconds, pick a random direction to strafe in
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(Random.Range(strafeFrequency / 2, strafeFrequency));
+        strafeSpd = Random.Range(-3, 6);// Set the strafe vector in here to make it more erratic
+        strafing = false;
     }
 
+    IEnumerator patrol()
+    {
+        patrolling = true;
+        Vector3 destination = new Vector3(Random.Range(-patrolRange, patrolRange), 0, Random.Range(-patrolRange, patrolRange));
+        pathToPoint(destination);
+        yield return new WaitForSeconds(Random.Range(patrolFrequency / 3, patrolFrequency));
+        patrolling = false;
+    }
 
-    
     private void OnDrawGizmos()
     {
         // Fancy gizmo doohickeys using trigangle math or some shit
