@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -22,13 +23,24 @@ public class EnemyAI : MonoBehaviour
     public bool xRay;
     public bool facePlayer;
     [SerializeField]
-    private float facePlayerSpd = 0.1f;
+    private float facePlayerSpd = 5;
+
+    // Set to 0 to disable
     [SerializeField]
-    private float strafeFrequency;
+    private float meleeRange;
+    public UnityEvent melee;
     [SerializeField]
-    private float patrolRange;
+    private float shootRange;
+    public UnityEvent shoot;
+
     [SerializeField]
-    private float patrolFrequency;
+    private float strafeFrequency = 2.5f;
+    [SerializeField]
+    private float patrolRange = 10;
+    [SerializeField]
+    private float patrolFrequency = 6;
+    [SerializeField]
+    private bool fixedPatrol;
     public bool returnToPost;
     [SerializeField]
     private GameObject head;
@@ -43,6 +55,7 @@ public class EnemyAI : MonoBehaviour
     private bool strafing;
     private bool patrolling;
     private float strafeSpd;
+    private Vector3 post;
 
     private float h;
     private float o;
@@ -51,35 +64,37 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         stopDist = agent.stoppingDistance;
+        post = transform.position;
         getPlayers();
     }
 
     private void Update()
     {
-
         //If agent has signt
         if (checkVision())
         {
+            float dist = (Vector3.Distance(focus.position, transform.position));
+
             // If the player is within stopping distance or the agent is tacticool, turn to face them
-            if ((Vector3.Distance(focus.position, transform.position) <= agent.stoppingDistance && checkVision()) || facePlayer && checkVision())
+            if (dist <= agent.stoppingDistance && checkVision() || facePlayer && checkVision())
             {
                 var targetRot = Quaternion.LookRotation(Vector3.Scale(focus.position - transform.position, new Vector3(1, 0, 1)), Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, facePlayerSpd * Time.deltaTime);
             }
             // Strafe if strafing (simple)
             if (strafing)
-            {
                 agent.Move(strafeSpd * transform.right * Time.deltaTime);
-            }
+
+            // If in melee range, run melee function
+            if(dist < meleeRange)
+                melee.Invoke();
+
+            // If in shooting range, run shoot function
+            if (dist < shootRange && dist > meleeRange)
+                shoot.Invoke();
+
             // If the agent cannot see the player, go all the way to their last seen position, otherwise distance to protect the NHS
-            if (checkVision())
-            {
-                agent.stoppingDistance = stopDist;
-            }
-            else
-            {
-                agent.stoppingDistance = 0;
-            }
+            agent.stoppingDistance = stopDist;
         }
         else
         {
@@ -101,7 +116,7 @@ public class EnemyAI : MonoBehaviour
             {
                 float dist = Vector3.Distance(transform.position, target.transform.position);
                 // Are they within the vis cone?
-                if (Vector3.Angle(target.transform.position - transform.position, transform.forward) < visConeAngle && dist < visDistance)
+                if (Vector3.Angle(target.transform.position - head.transform.position, transform.forward) < visConeAngle && dist < visDistance)
                 {
                     // If the agent cannot see through walls, will it be able to spot the player?
                     RaycastHit hit;
@@ -125,8 +140,16 @@ public class EnemyAI : MonoBehaviour
             }
 
         }
-        if (!patrolling && agent.remainingDistance <= 0.1f)
-            StartCoroutine(patrol());
+        if (returnToPost && Vector3.Distance(transform.position, post) > patrolRange && agent.remainingDistance <= 0.1f)
+        {
+            pathToPoint(post + new Vector3(Random.Range(-patrolRange, patrolRange), 0, Random.Range(-patrolRange, patrolRange)));
+        }
+        else
+        {
+            if (!patrolling && agent.remainingDistance <= 0.1f)
+                StartCoroutine(patrol());
+        }
+
         return false;
     }
 
@@ -154,8 +177,16 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator patrol()
     {
+        Vector3 destination;
         patrolling = true;
-        Vector3 destination = new Vector3(Random.Range(-patrolRange, patrolRange), 0, Random.Range(-patrolRange, patrolRange));
+        if (fixedPatrol)
+        {
+            destination = post + new Vector3(Random.Range(-patrolRange, patrolRange), 0, Random.Range(-patrolRange, patrolRange));
+        }
+        else
+        {
+            destination = new Vector3(Random.Range(-patrolRange, patrolRange), 0, Random.Range(-patrolRange, patrolRange));
+        }
         pathToPoint(destination);
         yield return new WaitForSeconds(Random.Range(patrolFrequency / 3, patrolFrequency));
         patrolling = false;
