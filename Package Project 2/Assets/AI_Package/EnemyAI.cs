@@ -5,6 +5,11 @@ using System.Linq;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
+[System.Serializable]
+public class attack : UnityEvent<Transform>
+{
+}
+
 public class EnemyAI : MonoBehaviour
 {
     //Patrol behaviour
@@ -27,11 +32,10 @@ public class EnemyAI : MonoBehaviour
 
     // Set to 0 to disable
     [SerializeField]
-    private float meleeRange;
-    public UnityEvent melee;
+    private float minAtkDelay = 0.5f;
     [SerializeField]
-    private float shootRange;
-    public UnityEvent shoot;
+    private float maxAtkDelay = 5;
+    public attack attack;
 
     [SerializeField]
     private float strafeFrequency = 2.5f;
@@ -54,6 +58,7 @@ public class EnemyAI : MonoBehaviour
     private float stopDist;
     private bool strafing;
     private bool patrolling;
+    private bool atkcd;
     private float strafeSpd;
     private Vector3 post;
 
@@ -84,15 +89,8 @@ public class EnemyAI : MonoBehaviour
             // Strafe if strafing (simple)
             if (strafing)
                 agent.Move(strafeSpd * transform.right * Time.deltaTime);
-
-            // If in melee range, run melee function
-            if(dist < meleeRange)
-                melee.Invoke();
-
-            // If in shooting range, run shoot function
-            if (dist < shootRange && dist > meleeRange)
-                shoot.Invoke();
-
+            if (!atkcd)
+                StartCoroutine(attackcd());
             // If the agent cannot see the player, go all the way to their last seen position, otherwise distance to protect the NHS
             agent.stoppingDistance = stopDist;
         }
@@ -190,6 +188,15 @@ public class EnemyAI : MonoBehaviour
         pathToPoint(destination);
         yield return new WaitForSeconds(Random.Range(patrolFrequency / 3, patrolFrequency));
         patrolling = false;
+    }
+
+    IEnumerator attackcd()
+    {
+        atkcd = true;
+        Debug.Log("attack cooldown");
+        attack.Invoke(focus);
+        yield return new WaitForSeconds(Random.Range(minAtkDelay, maxAtkDelay));
+        atkcd = false;
     }
 
     private void OnDrawGizmos()
