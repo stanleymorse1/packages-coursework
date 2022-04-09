@@ -21,6 +21,11 @@ public class EnemyAI : MonoBehaviour
     //Identify if damage came from current target, if not, switch targets after a certain amount
     //Retreat/cover behaviour as bonus if you have time?
 
+    //Attack behaviour does not work. Solutions?
+    //Learn how to pass parameters to unity events you idiot.
+    //Alternatively, have the transform of the focus be preset and parented to whichever player is currently being attacked.
+    //That is a sin, punishable by death
+
     [SerializeField]
     private float visConeAngle = 45;
     [SerializeField]
@@ -75,7 +80,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
-        //If agent has signt
+        // If agent has signt
         if (checkVision())
         {
             float dist = (Vector3.Distance(focus.position, transform.position));

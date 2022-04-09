@@ -5,13 +5,12 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class GenerateSlots : MonoBehaviour
 {
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> slots;
     public GameObject slotsParent;
     private CharInventory ci;
     [SerializeField]
     private GameObject player;
-
 
     private void Start()
     {
@@ -32,7 +31,7 @@ public class GenerateSlots : MonoBehaviour
 
         }
 
-        Debug.Log($"{slots.Count} slots out of {ci.capacity}");
+        //Debug.Log($"{slots.Count} slots out of {ci.capacity}");
         if (slots.Count > ci.capacity)
         {
             for (int i = ci.capacity; i >= 0; i--)
