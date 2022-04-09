@@ -5,16 +5,12 @@ using System.Linq;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class attack : UnityEvent<Transform>
-{
-}
-
 public class EnemyAI : MonoBehaviour
 {
-    //Patrol behaviour
+    //Search behaviour (optional)
     //When losing player, check left, check right, then patrol in a 4 by 4 area 4m in front of where you were when you lost them
     //If not found within a short time range, resume a large patrol
+
     //Damage script
     //Different speeds for aggro and not aggro
     //Swap targets if: New target breaks previous LOS, new target deals enough damage
@@ -40,7 +36,8 @@ public class EnemyAI : MonoBehaviour
     private float minAtkDelay = 0.5f;
     [SerializeField]
     private float maxAtkDelay = 5;
-    public attack attack;
+
+    public TransformEvent attack;
 
     [SerializeField]
     private float strafeFrequency = 2.5f;

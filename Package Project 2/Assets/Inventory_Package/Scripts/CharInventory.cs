@@ -50,7 +50,6 @@ public class CharInventory : MonoBehaviour
         invOpen = invScreen.transform.Find("Inventory").gameObject.activeSelf;
         Inventory.Capacity = capacity;
         slots = invScreen.GetComponent<GenerateSlots>().slots;
-        invScreen.GetComponent<GenerateSlots>().enabled = false;
     }
 
     void Update()
