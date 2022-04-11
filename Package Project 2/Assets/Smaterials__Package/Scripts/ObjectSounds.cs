@@ -19,6 +19,7 @@ public class ObjectSounds : MonoBehaviour
             List<string> slist = s.ToList();
             slist.Sort();
             soundCombo = slist[0] + slist[1];
+            soundCombo = String.Concat(soundCombo.Where(c => !Char.IsWhiteSpace(c)));
             Sounds[i].impactCombo = soundCombo.ToLower();
             // All of that just to standardise the bloody list
         }
@@ -41,8 +42,6 @@ public class ObjectSounds : MonoBehaviour
     public void PlaySound(string combo, Vector3 pos, float volume)
     {
         Sound s = Array.Find(Sounds, cmb => cmb.impactCombo == combo);
-            
-        
 
         if (s == null)
         {

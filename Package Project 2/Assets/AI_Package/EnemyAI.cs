@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.AI;
-using UnityEngine.Events;
+using UnityEditor;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -204,21 +204,22 @@ public class EnemyAI : MonoBehaviour
     private void OnDrawGizmos()
     {
         // Fancy gizmo doohickeys using trigangle math or some shit
+        if (Selection.Contains(gameObject))
+        {
+            h = visDistance / Mathf.Cos(visConeAngle * Mathf.Deg2Rad);
+            o = h * Mathf.Tan(visConeAngle * Mathf.Deg2Rad);
 
-        h = visDistance / Mathf.Cos(visConeAngle * Mathf.Deg2Rad);
-        o = h * Mathf.Tan(visConeAngle * Mathf.Deg2Rad);
-
-        Vector3 worldVector;
-        Gizmos.color = Color.red;
-        worldVector =  head.transform.TransformVector(new Vector3(o, 0, visDistance));
-        Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
-        worldVector = head.transform.TransformVector(new Vector3(-o, 0, visDistance));
-        Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
-        worldVector = head.transform.TransformVector(new Vector3(0, o, visDistance));
-        Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
-        worldVector = head.transform.TransformVector(new Vector3(0, -o, visDistance));
-        Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
-
+            Vector3 worldVector;
+            Gizmos.color = Color.red;
+            worldVector = head.transform.TransformVector(new Vector3(o, 0, visDistance));
+            Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
+            worldVector = head.transform.TransformVector(new Vector3(-o, 0, visDistance));
+            Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
+            worldVector = head.transform.TransformVector(new Vector3(0, o, visDistance));
+            Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
+            worldVector = head.transform.TransformVector(new Vector3(0, -o, visDistance));
+            Gizmos.DrawLine(head.transform.position, head.transform.position + worldVector);
+        }
         if (agent && agent.hasPath)
         {
             Gizmos.DrawCube(agent.destination, new Vector3(0.1f, 1f, 0.1f));
