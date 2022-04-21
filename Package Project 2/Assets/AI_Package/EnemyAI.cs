@@ -88,11 +88,13 @@ public class EnemyAI : MonoBehaviour
         if (checkVision()/*&&(maxTrackDist > 0 && RemainingDistance(agent.path.corners) < maxTrackDist)*/)
         {
             //Debug.Log(RemainingDistance(agent.path.corners));
+            StopCoroutine(patrol());
+            StopCoroutine(Investigate());
 
             float dist = (Vector3.Distance(focus.position, transform.position));
 
             // If the player is within stopping distance or the agent is tacticool, turn to face them
-            if (dist <= agent.stoppingDistance && checkVision() || facePlayer && checkVision())
+            if (dist <= agent.stoppingDistance || facePlayer)
             {
                 var targetRot = Quaternion.LookRotation(Vector3.Scale(focus.position - transform.position, new Vector3(1, 0, 1)), Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, facePlayerSpd * Time.deltaTime);
@@ -326,7 +328,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 dir = Vector3.Slerp(transform.forward, final, 2*Time.deltaTime);
         Quaternion targetRot = Quaternion.LookRotation(dir, transform.up);
 
-        Debug.Log(Vector3.Angle(transform.forward, final));
+        //Debug.Log(Vector3.Angle(transform.forward, final));
         if (Vector3.Angle(transform.forward, final) > 1)
         {
             transform.rotation = targetRot;
