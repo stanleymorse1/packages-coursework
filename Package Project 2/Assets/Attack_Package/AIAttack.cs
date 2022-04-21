@@ -12,10 +12,9 @@ public class AIAttack : MonoBehaviour
     //When player is at a medium range, disable strafe and override stop dist to close distance to player for melee!
 
     [SerializeField]
-    private float rangedLimit = 20;
-    [SerializeField]
     private float meleeLimit = 1.5f;
-
+    [SerializeField]
+    private float rangedLimit = 20;
 
     private Animator anim;
     AnimatorOverrideController aoc;
@@ -33,7 +32,7 @@ public class AIAttack : MonoBehaviour
     {
         float dist = Vector3.Distance(transform.position, target.position);
         // If target is within my attack range but out of melee range
-        if (dist <= rangedLimit && dist > meleeLimit)
+        if (dist <= rangedLimit && dist > meleeLimit && !AnimatorIsPlaying())
         {
             // Find the correct attack pattern
             AtkPattern atk = attackPatterns.Find(p => p.name == "Lunge");
@@ -43,7 +42,7 @@ public class AIAttack : MonoBehaviour
             Debug.Log("Ranged attack");
 
         }
-        else if (dist <= meleeLimit)
+        else if (dist <= meleeLimit && !AnimatorIsPlaying())
         {
             // Find the correct attack pattern
             AtkPattern atk = attackPatterns.Find(p => p.name == "MainAttack");
@@ -56,15 +55,19 @@ public class AIAttack : MonoBehaviour
 
             foreach (Attack attack in atk.attacks)
             {
-                Debug.Log($"{weight} was calculated, {attack.weight} was required");
+                //Debug.Log($"{weight} was calculated, {attack.weight} was required");
                 if (weight < attack.weight)
                 {
                     aoc["Attack1"] = attack.animation;
-                    Debug.Log(attack.animation.name);
+                    //Debug.Log(attack.animation.name);
                     anim.Play("Attack1");
                     //anim.StopPlayback();
                 }
             }
         }
+    }
+    bool AnimatorIsPlaying()
+    { 
+        return anim.GetCurrentAnimatorStateInfo(0).length > anim.GetCurrentAnimatorStateInfo(0).normalizedTime; 
     }
 }
