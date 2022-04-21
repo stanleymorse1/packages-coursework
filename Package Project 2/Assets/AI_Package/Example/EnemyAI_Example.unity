@@ -801,7 +801,7 @@ GameObject:
   - component: {fileID: 1161394131}
   - component: {fileID: 1161394130}
   m_Layer: 0
-  m_Name: Obstacle (1)
+  m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1189,7 +1189,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1756860530299378903, guid: 0c46d4a6818418347a520ce504c7e1aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.94
+      value: -11.09
       objectReference: {fileID: 0}
     - target: {fileID: 1756860530299378903, guid: 0c46d4a6818418347a520ce504c7e1aa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1197,7 +1197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1756860530299378903, guid: 0c46d4a6818418347a520ce504c7e1aa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.68
+      value: -3.82
       objectReference: {fileID: 0}
     - target: {fileID: 1756860530299378903, guid: 0c46d4a6818418347a520ce504c7e1aa, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1600,7 +1600,7 @@ GameObject:
   - component: {fileID: 2141558001}
   - component: {fileID: 2141558000}
   m_Layer: 0
-  m_Name: Obstacle
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1690,6 +1690,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8066292083481642830, guid: ab11af405b479584994f404aa3a95074, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.651
+      objectReference: {fileID: 0}
+    - target: {fileID: 8066292083673629814, guid: ab11af405b479584994f404aa3a95074, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8066292084650230316, guid: ab11af405b479584994f404aa3a95074, type: 3}
       propertyPath: m_Name
       value: Enemy
@@ -1701,6 +1709,14 @@ PrefabInstance:
     - target: {fileID: 8066292084650230317, guid: ab11af405b479584994f404aa3a95074, type: 3}
       propertyPath: minAtkDelay
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8066292084650230317, guid: ab11af405b479584994f404aa3a95074, type: 3}
+      propertyPath: attack.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8066292084650230317, guid: ab11af405b479584994f404aa3a95074, type: 3}
+      propertyPath: attack.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8066292084650230327, guid: ab11af405b479584994f404aa3a95074, type: 3}
       propertyPath: m_RootOrder
