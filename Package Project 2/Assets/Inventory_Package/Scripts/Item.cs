@@ -8,10 +8,11 @@ public class Item : MonoBehaviour
 {
     public string itemName;
     public Sprite image;
-    public bool stackable;
-    public int stackSize;
+    //public bool stackable;
+    //public int stackSize;
     public bool usable;
+    public bool consumeOnUse;
     public bool droppable;
     public string verb;
-    public UnityEvent use;
+    public GameObjectEvent use;
 }

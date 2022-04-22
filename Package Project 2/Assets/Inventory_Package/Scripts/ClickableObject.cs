@@ -13,12 +13,12 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler
     private float startVal;
 
     private Item itemScript;
-    private CharInventory inventory;
+    private CharInventory inventoryScript;
 
     private void Start()
     {
         itemScript = item.GetComponent<Item>();
-        inventory = GameObject.FindWithTag("Player").GetComponent<CharInventory>();
+        inventoryScript = GameObject.FindWithTag("Player").GetComponent<CharInventory>();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -26,14 +26,21 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler
         if (eventData.button == PointerEventData.InputButton.Left && itemScript.usable)
         {
             Debug.Log($"Used {itemScript.itemName}");
-            itemScript.use.Invoke();
+            itemScript.use.Invoke(inventoryScript.gameObject);
+            if (itemScript.consumeOnUse)
+            {
+                Destroy(inventoryScript.slots[inventoryScript.Inventory.IndexOf(item)].GetComponentInChildren<ClickableObject>().gameObject);
+                inventoryScript.Inventory.Remove(item);
+                inventoryScript.gameObject.SendMessage("updateInv");
+                Destroy(item.gameObject);
+            }
         }
         //else if (eventData.button == PointerEventData.InputButton.Middle)
         //    Debug.Log("Middle click");
         else if (eventData.button == PointerEventData.InputButton.Right && itemScript.droppable)
         {
             Debug.Log($"Dropped {itemScript.itemName}");
-            inventory.SendMessage("dropItem", item);
+            inventoryScript.SendMessage("dropItem", item);
         }
     }
 

@@ -23,7 +23,7 @@ public class CharInventory : MonoBehaviour
     public float dropOffset = 0.5f;
 
     public int capacity;
-    private List<GameObject> Inventory = new List<GameObject>();
+    public List<GameObject> Inventory = new List<GameObject>();
     
     [SerializeField]
     private KeyCode pickUpInput;
@@ -31,14 +31,14 @@ public class CharInventory : MonoBehaviour
     private KeyCode openInput;
     [SerializeField, Tooltip("Pickup radius, in a sphere around the centre of the character")]
     private float pickUpRange = 4;
-    [SerializeField, Tooltip("Do you have to be looking at object to pick it up? If not, distance to centre of screen is priority")]
-    bool requireLookAt = false;
+    //[SerializeField, Tooltip("Do you have to be looking at object to pick it up? If not, distance to centre of screen is priority")]
+    bool requireLookAt = true;
     [SerializeField, Tooltip("Thickness of sightline raycast")]
     float raySize = 0.3f;
     [SerializeField]
     private LayerMask ignore;
 
-    private List<GameObject> slots;
+    public List<GameObject> slots;
     private RaycastHit hit;
     private Item selected;
     private bool invOpen;
@@ -151,7 +151,7 @@ public class CharInventory : MonoBehaviour
         }
     }
 
-    void updateInv()
+    public void updateInv()
     {
         //debugList.text = Inventory.ToString();
         for (int i = 0; i < Inventory.Capacity; i++)
