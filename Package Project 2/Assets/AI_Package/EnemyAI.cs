@@ -30,6 +30,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     float maxTrackDist;
     [SerializeField]
+    float gracePeriod = 2.5f;
+    [SerializeField]
     float searchRad;
 
     // Set to 0 to disable
@@ -61,6 +63,7 @@ public class EnemyAI : MonoBehaviour
 
     NavMeshAgent agent;
     float stopDist;
+    float igrace;
     bool strafing;
     bool patrolling;
     bool atkcd;
@@ -119,6 +122,8 @@ public class EnemyAI : MonoBehaviour
     }
 
     // Check the vision cone and line of sight for players, return true if agent can see a player, and path to them
+
+    //TODO: countdown timer that ticks down after loss of sight, only report false AFTER the timer is up! spotting player resets timer
     bool checkVision()
     {
         // Check  all players in the game (objects tagged "Player")
@@ -141,6 +146,7 @@ public class EnemyAI : MonoBehaviour
                             {
                                 pathToPoint(hit.collider.transform);
                             }
+                            igrace = gracePeriod;
                             return true;
                         }
                     }
@@ -153,13 +159,21 @@ public class EnemyAI : MonoBehaviour
                 {
                     pathToPoint(target.transform);
                 }
+                igrace = gracePeriod;
                 return true;
             }
 
         }
-        lostContact();
-
-        return false;
+        igrace -= Time.deltaTime;
+        if(igrace <= 0)
+        {
+            lostContact();
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     // Path towards an enemy, strafing where necessary

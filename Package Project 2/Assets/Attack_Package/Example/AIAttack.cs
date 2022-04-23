@@ -12,9 +12,13 @@ public class AIAttack : MonoBehaviour
     //When player is at a medium range, disable strafe and override stop dist to close distance to player for melee!
 
     [SerializeField]
-    private float meleeLimit = 1.5f;
+    private float swipeLimit = 1.5f;
     [SerializeField]
-    private float rangedLimit = 20;
+    private float lungeLimit = 20;
+
+    [SerializeField]
+    GameObject weapon;
+    damage weaponScript;
 
     private Animator anim;
     AnimatorOverrideController aoc;
@@ -26,27 +30,29 @@ public class AIAttack : MonoBehaviour
         anim = GetComponent<Animator>();
         aoc = new AnimatorOverrideController(anim.runtimeAnimatorController);
         anim.runtimeAnimatorController = aoc;
+        weaponScript = weapon.GetComponent<damage>();
     }
     public void PickAttack(Transform target)
     {
         float dist = Vector3.Distance(transform.position, target.position);
         // If target is within my attack range but out of melee range
-        if (dist <= rangedLimit && dist > meleeLimit && !AnimatorIsPlaying())
+        if (dist <= lungeLimit && dist > swipeLimit && !AnimatorIsPlaying())
         {
             // Find the correct attack pattern
             AtkPattern atk = attackPatterns.Find(p => p.name == "Lunge");
             aoc["Attack1"] = atk.attacks[0].animation;
+            weaponScript.dmg = atk.attacks[0].damage;
             anim.Play("Attack1");
-            Debug.Log("Ranged attack");
+            AudioSource.PlayClipAtPoint(atk.attacks[0].sound, transform.position);
+            Debug.Log("Lunge attack");
 
         }
-        else if (dist <= meleeLimit)
+        else if (dist <= swipeLimit)
         {
             // Find the correct attack pattern
             AtkPattern atk = attackPatterns.Find(p => p.name == "MainAttack");
             aoc["Attack1"] = atk.attacks[0].animation;
-
-            Debug.Log("Melee attack");
+            Debug.Log("Regular attack");
 
             //Weights system is a bit iffy, work on this mayhaps
             float weight = Random.Range(0f, 1f);
@@ -57,6 +63,8 @@ public class AIAttack : MonoBehaviour
                 if (weight < attack.weight)
                 {
                     aoc["Attack1"] = attack.animation;
+                    weaponScript.dmg = attack.damage;
+                    AudioSource.PlayClipAtPoint(attack.sound, transform.position);
                     anim.Play("Attack1");
                 }
             }

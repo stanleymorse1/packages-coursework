@@ -7,7 +7,7 @@ public class Attack
 {
     public AnimationClip animation;
     public bool overrideMovement;
-    public float damage;
+    public int damage;
     public float weight;
     public AudioClip sound;
 }
