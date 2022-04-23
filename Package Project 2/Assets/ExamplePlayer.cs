@@ -8,11 +8,16 @@ public class ExamplePlayer : MonoBehaviour
     public float speed;
     public float sens;
     public GameObject cam;
+    public bool lockCam;
 
 
     private void Start()
     {
         cc = GetComponent<CharacterController>();
+        if (lockCam)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
     void Update()
     {

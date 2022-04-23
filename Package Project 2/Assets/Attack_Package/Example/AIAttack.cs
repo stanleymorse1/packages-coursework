@@ -26,7 +26,6 @@ public class AIAttack : MonoBehaviour
         anim = GetComponent<Animator>();
         aoc = new AnimatorOverrideController(anim.runtimeAnimatorController);
         anim.runtimeAnimatorController = aoc;
-        
     }
     public void PickAttack(Transform target)
     {
@@ -38,11 +37,10 @@ public class AIAttack : MonoBehaviour
             AtkPattern atk = attackPatterns.Find(p => p.name == "Lunge");
             aoc["Attack1"] = atk.attacks[0].animation;
             anim.Play("Attack1");
-            //anim.StopPlayback();
             Debug.Log("Ranged attack");
 
         }
-        else if (dist <= meleeLimit && !AnimatorIsPlaying())
+        else if (dist <= meleeLimit)
         {
             // Find the correct attack pattern
             AtkPattern atk = attackPatterns.Find(p => p.name == "MainAttack");
@@ -59,9 +57,7 @@ public class AIAttack : MonoBehaviour
                 if (weight < attack.weight)
                 {
                     aoc["Attack1"] = attack.animation;
-                    //Debug.Log(attack.animation.name);
                     anim.Play("Attack1");
-                    //anim.StopPlayback();
                 }
             }
         }

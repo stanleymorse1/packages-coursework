@@ -23,6 +23,7 @@ public class CharInventory : MonoBehaviour
     public float dropOffset = 0.5f;
 
     public int capacity;
+    [HideInInspector]
     public List<GameObject> Inventory = new List<GameObject>();
     
     [SerializeField]
@@ -38,6 +39,7 @@ public class CharInventory : MonoBehaviour
     [SerializeField]
     private LayerMask ignore;
 
+    [HideInInspector]
     public List<GameObject> slots;
     private RaycastHit hit;
     private Item selected;
