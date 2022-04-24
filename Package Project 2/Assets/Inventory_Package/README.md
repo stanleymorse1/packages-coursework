@@ -1,3 +1,7 @@
+<!---
+Text look weird? Go to Github for a better viewing experience:
+https://github.com/stanleymorse1/packages-coursework/tree/main/Package%20Project%202/Assets/Inventory_Package
+-->
 <H1>Inventory Package</H1>
 <H2>Contents:</H2>
 <ol>
