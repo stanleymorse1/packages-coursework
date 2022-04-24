@@ -101,4 +101,13 @@ public class Smaterial : MonoBehaviour
         collide = false;
         cr2 = false;
     }
+
+    private void OnDrawGizmos()
+    {
+        foreach (ContactPoint point in contacts)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(point.point, 0.1f);
+        }
+    }
 }

@@ -242,7 +242,7 @@ public class EnemyAI : MonoBehaviour
     IEnumerator strafeWalk()
     {
         yield return new WaitForSeconds(Random.Range(strafeFrequency / 2, strafeFrequency));
-        strafeSpd = Random.Range(-3, 6);// Set the strafe vector in here to make it more erratic
+        strafeSpd = Random.Range(-3, 3);// Set the strafe vector in here to make it more erratic
         strafing = false;
     }
 
