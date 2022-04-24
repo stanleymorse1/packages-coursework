@@ -32,6 +32,7 @@ https://github.com/stanleymorse1/packages-coursework/tree/main/Package%20Project
   <li><b>Face player: </b>Forces AI to face towards the player regardless of the path direction (note that the AI will face the player if they are within its stopping distance regardless of this setting</li>
   <li><b>Face player spd: </b>The rotation speed, in degrees per second, to turn to face the player</li>
   <li><b>Max Track Dist: </b>The maximum distance the AI can path to. Decrease this to make the AI avoid long winding paths and prefer shorter routes</li>
+  <li><b>Grace Period: </b>Number of seconds after losing line of sight to stop tracking player. The higher this value is the better the AI is at tracking down their target after losing sight</li>
   <li><b>Search rad: </b>The radius that the AI will search for the player after they lose sight</li>
   <li><b>Min/Max attack delays: </b>Define how often to execute attack scripts, using random value in this range</li>
   <li><b>Attack: </b>UnityEvent for a custom attack script. Note that the AI does not check range, you will have to perform these checks in the attack script yourself</li>
