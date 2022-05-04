@@ -8,15 +8,19 @@ using UnityEditor;
 public class EnemyAI : MonoBehaviour
 {
     //          TODO:
-    // Damage script
-    // Different speeds for aggro and not aggro
-    // Swap targets if: New target breaks previous LOS, new target deals enough damage
-    // Identify if damage came from current target, if not, switch targets after a certain amount
+    // Target breakable objects blocking the way if aggro
+    // Debug
     // Retreat/cover behaviour as bonus if you have time?
-    
+    // Swap targets if: New target breaks previous LOS, new target deals enough damage (super bonus time)
+    // Identify if damage came from current target, if not, switch targets after a certain amount
+
+
+
     //          BUGS:
     // AI starts pathing before patrol path has finished generating (when path is recalculated)
-    // Sometimes AI can lose you around a corner - perhaps take a 
+    // Grace period not working
+    // Test AI max path dist
+    // AI sometimes loses ability to path to player? Investigate
 
     [SerializeField]
     float visConeAngle = 45;
@@ -88,12 +92,11 @@ public class EnemyAI : MonoBehaviour
     private void Update()
     {
         // If agent has sight, handle facing player and 
-        if (checkVision()/*&&(maxTrackDist > 0 && RemainingDistance(agent.path.corners) < maxTrackDist)*/)
+        if (checkVision() && focus/*&&(maxTrackDist > 0 && RemainingDistance(agent.path.corners) < maxTrackDist)*/)
         {
-            //Debug.Log(RemainingDistance(agent.path.corners));
+            Debug.Log("Chasing player");
             StopCoroutine(patrol());
             StopCoroutine(Investigate());
-
             float dist = (Vector3.Distance(focus.position, transform.position));
 
             // If the player is within stopping distance or the agent is tacticool, turn to face them
@@ -119,6 +122,7 @@ public class EnemyAI : MonoBehaviour
     void getPlayers()
     {
         targets = GameObject.FindGameObjectsWithTag("Player").ToList();
+        Debug.Log(targets[0]);
     }
 
     // Check the vision cone and line of sight for players, return true if agent can see a player, and path to them
@@ -126,8 +130,9 @@ public class EnemyAI : MonoBehaviour
     //TODO: countdown timer that ticks down after loss of sight, only report false AFTER the timer is up! spotting player resets timer
     bool checkVision()
     {
+        Debug.Log("Checking vision");
         // Check  all players in the game (objects tagged "Player")
-        foreach(GameObject target in targets)
+        foreach (GameObject target in targets)
         {
             if (!xRay)
             {
@@ -142,11 +147,10 @@ public class EnemyAI : MonoBehaviour
                         if (hit.collider.CompareTag("Player"))
                         {
                             // Execute chase code, unless target outside of max distance and max distance is enabled.
-                            if (!(maxTrackDist > 0 && RemainingDistance(agent.path.corners) > maxTrackDist))
+                            if (!(maxTrackDist > 0 && RemainingDistance(agent.path.corners) > maxTrackDist)/* && igrace > 0*/)
                             {
                                 pathToPoint(hit.collider.transform);
                             }
-                            igrace = gracePeriod;
                             return true;
                         }
                     }
@@ -159,26 +163,27 @@ public class EnemyAI : MonoBehaviour
                 {
                     pathToPoint(target.transform);
                 }
-                igrace = gracePeriod;
                 return true;
             }
 
         }
         igrace -= Time.deltaTime;
-        if(igrace <= 0)
+        if (igrace > 0)
         {
-            lostContact();
-            return false;
+            Debug.Log(igrace);
+            return true;
         }
         else
         {
-            return true;
+            lostContact();
+            return false;
         }
     }
 
     // Path towards an enemy, strafing where necessary
     void pathToPoint(Transform dest)
     {
+        igrace = gracePeriod;
         agent.speed = spd;
         aggro = true;
         agent.SetDestination(dest.position);
@@ -321,7 +326,7 @@ public class EnemyAI : MonoBehaviour
         i = transform.forward;
         f = -transform.forward;
         yield return new WaitUntil(() => turn(i, f));
-        
+
         yield return new WaitForSeconds(Random.Range(0.5f, 1f));
         agent.Raycast(new Vector3(Random.Range(-searchRad, searchRad), 0, Random.Range(-searchRad, searchRad)), out hit);
 
@@ -339,7 +344,7 @@ public class EnemyAI : MonoBehaviour
     {
         agent.updateRotation = false;
 
-        Vector3 dir = Vector3.Slerp(transform.forward, final, 2*Time.deltaTime);
+        Vector3 dir = Vector3.Slerp(transform.forward, final, 2 * Time.deltaTime);
         Quaternion targetRot = Quaternion.LookRotation(dir, transform.up);
 
         //Debug.Log(Vector3.Angle(transform.forward, final));
