@@ -44,11 +44,6 @@ public class PhysicsGun : MonoBehaviour
 
         if (HoldingObject)
             DetectNearSurfaces();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Time.timeScale = 0;
-        }
        
         if(HoldingObject)
             UpdateHeldObject();

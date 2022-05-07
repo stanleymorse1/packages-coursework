@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Dumpster
   - Enemy
+  - Hurt
+  - Picnic
+  - Ghost
   layers:
   - Default
   - TransparentFX
@@ -15,7 +18,7 @@ TagManager:
   - UI
   - Objects
   - Enemy
-  - 
+  - Player
   - 
   - 
   - 

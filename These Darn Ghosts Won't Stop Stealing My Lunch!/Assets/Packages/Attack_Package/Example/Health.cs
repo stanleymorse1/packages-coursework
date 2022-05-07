@@ -17,26 +17,27 @@ public class Health : MonoBehaviour
     public void hurt(int damage)
     {
         currentHealth -= damage;
-        AudioSource.PlayClipAtPoint(hitSound, transform.position);
+        if(hitSound)
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
     }
 
     private void Start()
     {
-        healthBar.maxValue = maxHealth;
-        healthBar.value = currentHealth;
+        if (healthBar)
+        {
+            healthBar.maxValue = maxHealth;
+            healthBar.value = currentHealth;
+        }
         nhealth = currentHealth;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            hurt(10);
-        }
         if (Mathf.RoundToInt(nhealth) != currentHealth)
         {
             nhealth = Mathf.Lerp(nhealth, currentHealth, 6*Time.deltaTime);
-            healthBar.value = nhealth;
+            if (healthBar)
+                healthBar.value = nhealth;
         }
         if(currentHealth <= 0)
         {

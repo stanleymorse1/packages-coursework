@@ -17,4 +17,13 @@ public class damage : MonoBehaviour
             dmg = 0;
         }
     }
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag(htag) && dmg > 0)
+        {
+            Debug.Log("Hit enemy");
+            other.gameObject.SendMessage("hurt", dmg);
+            dmg = 0;
+        }
+    }
 }
